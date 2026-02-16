@@ -18,6 +18,7 @@ extern crate lazy_static;
 use std::sync::{Arc, Mutex};
 use std::{ptr, thread};
 use lazy_static::lazy_static;
+use obfstr::obfstr as s;
 use windows_sys::Win32::Foundation::HANDLE;
 use windows_sys::Win32::UI::WindowsAndMessaging::{MessageBoxA, MB_OK};
 use windows_sys::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
@@ -27,7 +28,10 @@ use dyncvoke::dyncvoke_core::{nt_create_thread_ex,get_function_address, load_lib
 mod forward;
 
 const NATIVE: bool = true;
-const DLL_NAME: &str = r#"{ORIGINAL_DLL_PATH}"#;
+
+lazy_static! {
+    static ref DLL_NAME: String = s!("{ORIGINAL_DLL_PATH}").to_string();
+}
 
 static mut CALLBACK_TABLE: [usize; {NUM_EXPORTS}] = [0; {NUM_EXPORTS}];
 lazy_static! {
@@ -50,7 +54,7 @@ pub unsafe extern "system" fn DllMain(
 
 fn initialize_component() {
     unsafe {
-        MessageBoxA(ptr::null_mut(), windows_sys::core::s!("Module initialized. ProxyMode Success"), windows_sys::core::s!("Status"), MB_OK);
+        MessageBoxA(ptr::null_mut(), s!("Module initialized. ProxyMode Success").as_ptr() as *const u8, s!("Status").as_ptr() as *const u8, MB_OK);
     }
 }
 
@@ -147,14 +151,15 @@ fn dispatch_call(
 
     let proc_name = match export_id {
         {MATCH_STATEMENT}
-        _ => "".to_string(),
+        _ => s!("").to_string(),
     };
 
     if proc_name.is_empty() {
         return 0;
     }
 
-    let module_handle = load_library_a(DLL_NAME);
+    let dll_name = DLL_NAME.as_str();
+    let module_handle = load_library_a(dll_name);
     if module_handle == 0 {
         return 0;
     }

@@ -20,6 +20,7 @@ crate-type = ["cdylib"]
 [dependencies]
 lazy_static = "1.4.0"
 dyncvoke = { git = "https://github.com/Whitecat18/Dyncvoke" }
+obfstr = "0.4.4"
 
 [dependencies.windows-sys]
 version = "0.61.2"
@@ -242,7 +243,7 @@ pub unsafe extern "system" fn {}(
     payload_execution();
     1
 }}"#,
-    hijack_export
+            hijack_export
         );
 
         // Generate lib.rs

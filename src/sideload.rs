@@ -7,6 +7,9 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
+[dependencies]
+obfstr = "0.4.4"
+
 [dependencies.windows-sys]
 version = "0.61.2"
 features = [
@@ -21,6 +24,7 @@ pub const LIB_RS_TEMPLATE: &str = r#"
 
 use std::ffi::c_void;
 use std::ptr::null_mut;
+use obfstr::obfstr as s;
 use windows_sys::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
 use windows_sys::Win32::UI::WindowsAndMessaging::MessageBoxW;
 use windows_sys::core::BOOL;
@@ -44,8 +48,8 @@ pub unsafe extern "system" fn DllMain(
 unsafe fn payload_execution() {
     MessageBoxW(
         null_mut(),
-        windows_sys::core::w!("Sideload Executed Successfully!"),
-        windows_sys::core::w!("Success"),
+        s!("Sideload Executed Successfully!").as_ptr() as *const u16,
+        s!("Success").as_ptr() as *const u16,
         0,
     );
 }
