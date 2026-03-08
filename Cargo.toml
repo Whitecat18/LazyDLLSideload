@@ -5,7 +5,6 @@ edition = "2021"
 authors = ["5mukx", "smukx@5mukx.site"]
 description = "An Lazy tool to generating DLL proxy/sideload projects"
 repository = "https://github.com/Whitecat18/LazyDLLSideload"
-categories = ["Sideloading", "Proxy Loading", "Red Team"]
 readme = "README.md"
 license = "MIT"
 
